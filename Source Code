@@ -1,0 +1,227 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+
+// Customer class for CRM
+class Customer {
+    private String name;
+    private String email;
+    private String phoneNumber;
+
+    public Customer(String name, String email, String phoneNumber) {
+        this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer Name: " + name + ", Email: " + email + ", Phone: " + phoneNumber;
+    }
+}
+
+// Inventory class for managing inventory items
+class Inventory {
+    private HashMap<String, Integer> items;
+
+    public Inventory() {
+        items = new HashMap<>();
+    }
+
+    public void addItem(String item, int quantity) {
+        items.put(item, items.getOrDefault(item, 0) + quantity);
+    }
+
+    public void useItem(String item, int quantity) {
+        if (items.containsKey(item) && items.get(item) >= quantity) {
+            items.put(item, items.get(item) - quantity);
+        } else {
+            System.out.println("Insufficient stock or item not found.");
+        }
+    }
+
+    public void showInventory() {
+        System.out.println("Current Inventory:");
+        items.forEach((k, v) -> System.out.println(k + ": " + v));
+    }
+}
+
+// Billing class for managing hotel bills
+class Billing {
+    private ArrayList<String> items;
+    private ArrayList<Double> prices;
+
+    public Billing() {
+        items = new ArrayList<>();
+        prices = new ArrayList<>();
+    }
+
+    public void addItem(String item, double price) {
+        items.add(item);
+        prices.add(price);
+    }
+
+    public double calculateTotal() {
+        double total = 0;
+        for (double price : prices) {
+            total += price;
+        }
+        return total;
+    }
+
+    public void showBill() {
+        System.out.println("Billing Details:");
+        for (int i = 0; i < items.size(); i++) {
+            System.out.println(items.get(i) + ": $" + prices.get(i));
+        }
+        System.out.println("Total: $" + calculateTotal());
+    }
+}
+
+// Main class for Hotel Management System
+public class HotelManagementSystem {
+    private static ArrayList<Customer> customerList = new ArrayList<>();
+    private static Inventory inventory = new Inventory();
+    private static Billing billing = new Billing();
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        boolean running = true;
+        
+        // Sample inventory
+        inventory.addItem("Towels", 50);
+        inventory.addItem("Water Bottles", 100);
+        inventory.addItem("Toiletries", 70);
+
+        while (running) {
+            System.out.println("\n--- Hotel Management System ---");
+            System.out.println("1. Customer Management");
+            System.out.println("2. Inventory Management");
+            System.out.println("3. Billing");
+            System.out.println("4. Exit");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+
+            switch (choice) {
+                case 1:
+                    manageCustomer();
+                    break;
+                case 2:
+                    manageInventory();
+                    break;
+                case 3:
+                    manageBilling();
+                    break;
+                case 4:
+                    running = false;
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    // Customer management
+    private static void manageCustomer() {
+        System.out.println("\n--- Customer Management ---");
+        System.out.println("1. Add Customer");
+        System.out.println("2. Show Customers");
+        System.out.print("Choose an option: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // consume newline
+
+        switch (choice) {
+            case 1:
+                System.out.print("Enter Customer Name: ");
+                String name = scanner.nextLine();
+                System.out.print("Enter Customer Email: ");
+                String email = scanner.nextLine();
+                System.out.print("Enter Customer Phone Number: ");
+                String phoneNumber = scanner.nextLine();
+                customerList.add(new Customer(name, email, phoneNumber));
+                System.out.println("Customer added successfully.");
+                break;
+            case 2:
+                System.out.println("\n--- Customer List ---");
+                for (Customer customer : customerList) {
+                    System.out.println(customer);
+                }
+                break;
+            default:
+                System.out.println("Invalid choice.");
+        }
+    }
+
+    // Inventory management
+    private static void manageInventory() {
+        System.out.println("\n--- Inventory Management ---");
+        System.out.println("1. Show Inventory");
+        System.out.println("2. Add Inventory Item");
+        System.out.println("3. Use Inventory Item");
+        System.out.print("Choose an option: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // consume newline
+
+        switch (choice) {
+            case 1:
+                inventory.showInventory();
+                break;
+            case 2:
+                System.out.print("Enter item name: ");
+                String item = scanner.nextLine();
+                System.out.print("Enter item quantity: ");
+                int quantity = scanner.nextInt();
+                inventory.addItem(item, quantity);
+                System.out.println("Item added successfully.");
+                break;
+            case 3:
+                System.out.print("Enter item name: ");
+                String useItem = scanner.nextLine();
+                System.out.print("Enter quantity to use: ");
+                int useQuantity = scanner.nextInt();
+                inventory.useItem(useItem, useQuantity);
+                break;
+            default:
+                System.out.println("Invalid choice.");
+        }
+    }
+
+    // Billing management
+    private static void manageBilling() {
+        System.out.println("\n--- Billing ---");
+        System.out.println("1. Add Item to Bill");
+        System.out.println("2. Show Bill");
+        System.out.print("Choose an option: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // consume newline
+
+        switch (choice) {
+            case 1:
+                System.out.print("Enter item name: ");
+                String item = scanner.nextLine();
+                System.out.print("Enter item price: ");
+                double price = scanner.nextDouble();
+                billing.addItem(item, price);
+                System.out.println("Item added to bill.");
+                break;
+            case 2:
+                billing.showBill();
+                break;
+            default:
+                System.out.println("Invalid choice.");
+        }
+    }
+}
